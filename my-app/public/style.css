@@ -1,0 +1,42 @@
+html * {
+  font-family: Futura, sans-serif;
+}
+
+body {
+  background-color: #e4e4e4;
+  color: #000807;
+}
+
+img {
+  width: 250px;
+  height: 140px;
+}
+
+label {
+  margin-bottom: 0;
+}
+
+.wrapper {
+  padding: 0 1.5vw 1.5vh 1.5vw;
+  margin: 0 0 1.5vh 0;
+}
+
+.brown_title {
+  color: #815355;
+  font-weight: bold;
+}
+
+.flex-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3%;
+  margin-bottom: 5%;
+}
+
+.patient {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  margin-bottom: 4%;
+}
