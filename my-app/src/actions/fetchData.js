@@ -18,7 +18,7 @@ export const fetchPatients = () => dispatch => {
       dispatch({
         type: FETCH_PATIENTS,
         status: 'success',
-        response: response.data,
+        response: response.data.content,
       })
     )
     .catch(err => {
@@ -51,7 +51,7 @@ export const selectId = id => dispatch => {
       dispatch({
         type: SELECT_PATIENTS_BY_ID,
         status: 'success',
-        response: response.data,
+        response: response.content,
       })
     )
     .catch(err => {

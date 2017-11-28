@@ -19,9 +19,9 @@ router.get('/patient', function(req, res) {
   ) {
     console.log('error:', error); // Print the error if one occurred
     console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-    console.log('body:', body); // Print the HTML for the Google homepage.
+    // console.log('body:', body); // Print the HTML for the Google homepage.
+    res.send(body);
   });
-  //res.json()
   // res.send([{name: 'John Doe', id: 1}, {name: 'Jane Doe', id: 2}]);
 });
 

@@ -23,10 +23,12 @@ class App extends Component {
   //Renders individual record
   renderPatients(patient) {
     return (
-      <div className="patient" key={patient.id}>
-        <h3 className="brown_title">
-          {patient.name}
-        </h3>
+      <div className="patient" key={patient.identifiers[0].value}>
+        <div className="row">
+          {patient.lastName}
+          {patient.firstName}
+          {patient.dateOfBirth}
+        </div>
       </div>
     );
   }
