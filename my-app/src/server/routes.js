@@ -6,8 +6,12 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 //Route for a specific patient
 router.get('/patient/:id', function(req, res) {
-  //res.json()
-  res.send('individual patient');
+  let url = `https://api.interview.healthforge.io/api${req.url}`;
+  request(url, function(error, response, body) {
+    console.log('error:', error); // Print the error if one occurred
+    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+    res.send(body);
+  });
 });
 
 //Route for all patient
@@ -21,7 +25,6 @@ router.get('/patient', function(req, res) {
     console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
     res.send(body);
   });
-  // res.send([{name: 'John Doe', id: 1}, {name: 'Jane Doe', id: 2}]);
 });
 
 module.exports = router;

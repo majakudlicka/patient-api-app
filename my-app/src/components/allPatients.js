@@ -4,7 +4,7 @@ import * as actions from '../actions/fetchData.js';
 import LoadingIndicator from 'react-loading-indicator';
 import {Link} from 'react-router';
 
-class App extends Component {
+class allPatients extends Component {
   constructor() {
     super();
     this.renderPatients = this.renderPatients.bind(this);
@@ -36,16 +36,20 @@ class App extends Component {
     return (
       <tr key={patient.identifiers[0].value}>
         <td>
-          {patient.lastName}
+          <Link to={`/patient/${patient.identifiers[0].value}`}>
+            {patient.lastName}
+          </Link>
         </td>
-
         <td>
-          {patient.firstName}
+          <Link to={`/patient/${patient.identifiers[0].value}`}>
+            {patient.firstName}
+          </Link>
         </td>
         <td>
           {formattedDateOfBirth}
         </td>
       </tr>
+      // </Link>
     );
   }
 
@@ -115,7 +119,6 @@ class App extends Component {
     } else {
       return (
         <div className="wrapper">
-          <Link to="/patient/24207334065940285913">Link</Link>
           <div className="flex-container">
             <form onSubmit={this.onSubmitCriteria}>
               <label className="brown_title">Search&nbsp;&nbsp;</label>
@@ -132,7 +135,7 @@ class App extends Component {
             </button>
           </div>
 
-          <table>
+          <table className="table_all_patients">
             <thead>
               <tr>
                 <th>Last Name</th>
@@ -158,4 +161,4 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, actions)(App);
+export default connect(mapStateToProps, actions)(allPatients);

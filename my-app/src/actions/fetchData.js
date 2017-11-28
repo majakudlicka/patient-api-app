@@ -39,19 +39,19 @@ export const filterPatients = title => {
 };
 
 //Fetches PATIENTS by id - filtering is done on back end
-export const selectId = id => dispatch => {
+export const fetchById = id => dispatch => {
   dispatch({
     type: SELECT_PATIENTS_BY_ID,
     status: 'pending',
   });
 
   axios
-    .get('/api/' + id)
+    .get(`/patient/${id}`)
     .then(response =>
       dispatch({
         type: SELECT_PATIENTS_BY_ID,
         status: 'success',
-        response: response.content,
+        response: response.data,
       })
     )
     .catch(err => {

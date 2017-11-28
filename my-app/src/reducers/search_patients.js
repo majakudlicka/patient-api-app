@@ -7,6 +7,7 @@ import {
 const initialState = {
   patients: [],
   filteredPatients: [],
+  patientData: [],
 };
 
 export default (state = initialState, action) => {
@@ -19,7 +20,7 @@ export default (state = initialState, action) => {
     case SELECT_PATIENTS_BY_ID:
       return {
         ...state,
-        patients: action.response,
+        patientData: action.response,
       };
     case FILTER_PATIENTS:
       let filteredPatients = state.patients.filter(patient => {
