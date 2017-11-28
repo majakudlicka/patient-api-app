@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import * as actions from '../actions/fetchData.js';
 import LoadingIndicator from 'react-loading-indicator';
+import {Link} from 'react-router';
 
 class App extends Component {
   constructor() {
@@ -10,6 +11,7 @@ class App extends Component {
     this.onSubmitCriteria = this.onSubmitCriteria.bind(this);
     this.onCriteriaChange = this.onCriteriaChange.bind(this);
     this.onSubmitId = this.onSubmitId.bind(this);
+    this.formatBirthDate = this.formatBirthDate.bind(this);
 
     this.state = {
       searchTerm: '',
@@ -20,16 +22,30 @@ class App extends Component {
     this.props.fetchPatients();
   }
 
+  formatBirthDate(date) {
+    const year = date.slice(0, 4);
+    const month = date.slice(5, 7);
+    const day = date.slice(8, 10);
+
+    return `${day}/${month}/${year}`;
+  }
+
   //Renders individual record
   renderPatients(patient) {
+    let formattedDateOfBirth = this.formatBirthDate(patient.dateOfBirth);
     return (
-      <div className="patient" key={patient.identifiers[0].value}>
-        <div className="row">
+      <tr key={patient.identifiers[0].value}>
+        <td>
           {patient.lastName}
+        </td>
+
+        <td>
           {patient.firstName}
-          {patient.dateOfBirth}
-        </div>
-      </div>
+        </td>
+        <td>
+          {formattedDateOfBirth}
+        </td>
+      </tr>
     );
   }
 
@@ -82,14 +98,24 @@ class App extends Component {
             </button>
           </div>
 
-          <div>
-            {filteredPatients.map(this.renderPatients)}
-          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Date of Birth</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredPatients.map(this.renderPatients)}
+            </tbody>
+          </table>
         </div>
       );
     } else {
       return (
         <div className="wrapper">
+          <Link to="/patient/24207334065940285913">Link</Link>
           <div className="flex-container">
             <form onSubmit={this.onSubmitCriteria}>
               <label className="brown_title">Search&nbsp;&nbsp;</label>
@@ -106,9 +132,18 @@ class App extends Component {
             </button>
           </div>
 
-          <div>
-            {patients.map(this.renderPatients)}
-          </div>
+          <table>
+            <thead>
+              <tr>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Date of Birth</th>
+              </tr>
+            </thead>
+            <tbody>
+              {patients.map(this.renderPatients)}
+            </tbody>
+          </table>
         </div>
       );
     }
