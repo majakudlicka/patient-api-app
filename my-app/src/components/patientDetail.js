@@ -25,9 +25,19 @@ class patientById extends Component {
 
   renderPatient(patientData) {
     let formattedDateOfBirth;
+    let zipCode;
+    let phone;
+
     if (patientData && patientData.dateOfBirth) {
-      console.log(patientData.dateOfBirth);
       formattedDateOfBirth = this.formatBirthDate(patientData.dateOfBirth);
+    }
+
+    if (patientData && patientData.addresses) {
+      zipCode = patientData.addresses[0].zipCode;
+    }
+
+    if (patientData && patientData.telecoms) {
+      phone = patientData.telecoms[0].value;
     }
 
     return (
@@ -64,9 +74,15 @@ class patientById extends Component {
             </td>
           </tr>
           <tr>
-            <th>Active: </th>
+            <th>Zip code: </th>
             <td>
-              {patientData.active}
+              {zipCode}
+            </td>
+          </tr>
+          <tr>
+            <th>Contant phone: </th>
+            <td>
+              {phone}
             </td>
           </tr>
         </tbody>
