@@ -21,7 +21,7 @@ router.get('/patient', function(req, res) {
     let page = req.query.page;
     url = `https://api.interview.healthforge.io/api/patient?size=10&page=${page}`;
   } else {
-    url = 'https://api.interview.healthforge.io/api/patient?size=1000';
+    url = 'https://api.interview.healthforge.io/api/patient?size=100';
   }
   request(url, function(error, response, body) {
     console.log('error:', error); // Print the error if one occurred

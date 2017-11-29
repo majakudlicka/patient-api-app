@@ -10,13 +10,12 @@ class allPatients extends Component {
   constructor() {
     super();
     this.renderPatients = this.renderPatients.bind(this);
-    this.onSubmitCriteria = this.onSubmitCriteria.bind(this);
-    this.onCriteriaChange = this.onCriteriaChange.bind(this);
-    this.onSubmitId = this.onSubmitId.bind(this);
+    this.onLastNameChange = this.onLastNameChange.bind(this);
     this.formatBirthDate = this.formatBirthDate.bind(this);
     this.handlePageClick = this.handlePageClick.bind(this);
-    this.fetchPatients = this.fetchPatients.bind(this);
+    // this.fetchPatients = this.fetchPatients.bind(this);
     this.fetchAllPatients = this.fetchAllPatients.bind(this);
+    this.resetFilters = this.resetFilters.bind(this);
 
     this.state = {
       allPatients: [],
@@ -60,23 +59,13 @@ class allPatients extends Component {
     );
   }
 
-  onSubmitCriteria(evt) {
-    evt.preventDefault();
-    this.props.filterPatients(this.state.searchTerm);
-  }
-
-  onSubmitId(evt) {
-    evt.preventDefault();
-    this.props.selectId(this.state.selectedSeason);
-  }
-
-  onCriteriaChange(evt) {
+  onLastNameChange(evt) {
     this.setState(
       {
         searchTerm: evt.target.value,
       },
       () => {
-        this.props.filterPatients(this.state.searchTerm);
+        this.filterPatients(this.state.searchTerm);
       }
     );
   }
@@ -86,30 +75,30 @@ class allPatients extends Component {
     const page = data.selected;
     const startIndex = page * patientsPerPage;
     const endIndex = page * patientsPerPage + 10;
-    const PatientsOnPage = this.state.Allpatients.slice(startIndex, endIndex);
+    const PatientsOnPage = this.state.allPatients.slice(startIndex, endIndex);
     this.setState({patients: PatientsOnPage});
     // this.fetchPatients(page);
   };
 
-  fetchPatients = (page = 1) => {
-    axios
-      .get('/patient', {params: {page: page}})
-      .then(response => {
-        this.setState({
-          patients: response.data.content,
-        });
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
+  // fetchPatients = (page = 1) => {
+  //   axios
+  //     .get('/patient', {params: {page: page}})
+  //     .then(response => {
+  //       this.setState({
+  //         patients: response.data.content,
+  //       });
+  //     })
+  //     .catch(err => {
+  //       console.log(err);
+  //     });
+  // };
 
   fetchAllPatients = () => {
     axios
       .get('/patient')
       .then(response => {
         this.setState({
-          Allpatients: response.data.content,
+          allPatients: response.data.content,
           patients: response.data.content.slice(0, 10),
         });
       })
@@ -118,15 +107,22 @@ class allPatients extends Component {
       });
   };
 
+  resetFilters = () => {
+    this.setState({filteredPatients: null});
+  };
+
   filterPatients = searchTerm => {
-    axios
-      .get('/filteredPatient', {params: {lastName: searchTerm}})
-      .then(response => {
-        this.setState({filetredPatients: response.data.content});
-      })
-      .catch(err => {
-        console.log(err);
-      });
+    let filteredPatients = this.state.allPatients.filter(patient => {
+      return (
+        patient.lastName.includes(searchTerm) ||
+        patient.firstName.includes(searchTerm) ||
+        patient.dateOfBirth.includes(searchTerm) ||
+        patient.addresses[0].zipCode.includes(searchTerm)
+      );
+    });
+    this.setState({
+      filteredPatients: filteredPatients,
+    });
   };
 
   render() {
@@ -141,21 +137,23 @@ class allPatients extends Component {
         <div className="wrapper">
           <div className="flex-container">
             <form onSubmit={this.onSubmitCriteria}>
-              <label>Search&nbsp;&nbsp;</label>
+              <label>
+                Search (last Name, first Name, DOB or zip code)&nbsp;&nbsp;
+              </label>
               <input
                 id="Search Title"
                 type="text"
                 value={this.state.searchTerm}
-                onChange={this.onCriteriaChange}
+                onChange={this.onLastNameChange}
               />&nbsp;&nbsp;&nbsp;&nbsp;
             </form>
 
-            <button type="submit" onClick={this.filterPatients}>
-              Refresh
+            <button type="submit" onClick={this.resetFilters}>
+              Reset
             </button>
           </div>
 
-          <table>
+          <table className="table_all_patients">
             <thead>
               <tr>
                 <th>Last Name</th>
@@ -174,17 +172,19 @@ class allPatients extends Component {
         <div className="wrapper">
           <div className="flex-container">
             <form onSubmit={this.onSubmitCriteria}>
-              <label>Search&nbsp;&nbsp;</label>
+              <label>
+                Search (last Name, first Name, DOB or zip code)&nbsp;&nbsp;
+              </label>
               <input
                 id="Search Title"
                 type="text"
                 value={this.state.searchTerm}
-                onChange={this.onCriteriaChange}
+                onChange={this.onLastNameChange}
               />&nbsp;&nbsp;&nbsp;&nbsp;
             </form>
 
-            <button type="submit" onClick={this.filterPatients}>
-              Refresh
+            <button type="submit" onClick={this.resetFilters}>
+              Reset
             </button>
           </div>
 
