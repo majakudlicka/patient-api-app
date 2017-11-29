@@ -20,6 +20,7 @@ class allPatients extends Component {
     this.state = {
       searchTerm: '',
       patients: [],
+      filteredPatients: null,
     };
   }
 
@@ -94,16 +95,25 @@ class allPatients extends Component {
       });
   };
 
-  render() {
-    let {filteredPatients} = this.props;
+  filterPatients = searchTerm => {
+    axios
+      .get('/filteredPatient', {params: {lastName: searchTerm}})
+      .then(response => {
+        this.setState({filetredPatients: response.data.content});
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
 
+  render() {
     if (this.state.patients.length === 0) {
       return (
         <div className="flex-container">
           <LoadingIndicator />
         </div>
       );
-    } else if (filteredPatients.length > 0) {
+    } else if (this.state.filetredPatients !== null) {
       return (
         <div className="wrapper">
           <div className="flex-container">
@@ -117,7 +127,7 @@ class allPatients extends Component {
               />&nbsp;&nbsp;&nbsp;&nbsp;
             </form>
 
-            <button type="submit" onClick={this.props.fetchPatients}>
+            <button type="submit" onClick={this.filterPatients}>
               Refresh
             </button>
           </div>
@@ -131,7 +141,7 @@ class allPatients extends Component {
               </tr>
             </thead>
             <tbody>
-              {filteredPatients.map(this.renderPatients)}
+              {this.state.filteredPatients.map(this.renderPatients)}
             </tbody>
           </table>
         </div>
@@ -150,7 +160,7 @@ class allPatients extends Component {
               />&nbsp;&nbsp;&nbsp;&nbsp;
             </form>
 
-            <button type="submit" onClick={this.props.fetchPatients}>
+            <button type="submit" onClick={this.filterPatients}>
               Refresh
             </button>
           </div>

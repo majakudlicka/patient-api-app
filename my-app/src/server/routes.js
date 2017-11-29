@@ -25,4 +25,15 @@ router.get('/patient', function(req, res) {
   });
 });
 
+//Route for all patient
+router.get('/filteredPatient', function(req, res) {
+  let lastName = req.query.lastName;
+  let url = `https://api.interview.healthforge.io/api/patient?&lastName=${lastName}`;
+  request(url, function(error, response, body) {
+    console.log('error:', error); // Print the error if one occurred
+    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+    res.send(body);
+  });
+});
+
 module.exports = router;
