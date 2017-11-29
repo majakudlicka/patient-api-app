@@ -16,6 +16,12 @@ label {
   margin-bottom: 0;
 }
 
+button {
+  background-color: #00d3cf;
+  border-color: #00d3cf;
+  color: white;
+}
+
 a,
 a:hover,
 a:focus,
@@ -25,6 +31,7 @@ a:active {
 }
 
 /*Styling for the patients table*/
+
 .table_all_patients {
   width: 100%;
   max-width: 1000px;
@@ -36,6 +43,7 @@ a:active {
     0px 10px 20px rgba(0, 0, 0, 0.05), 0px 20px 20px rgba(0, 0, 0, 0.05),
     0px 30px 20px rgba(0, 0, 0, 0.05);
 }
+
 tr:hover {
   background: #f4f4f4;
 }
@@ -61,6 +69,7 @@ th {
 }
 
 /*Styling for the individual patient table*/
+
 .table_individual_patient {
   max-width: 1000px;
   margin: 50px auto;
@@ -93,4 +102,28 @@ th {
   flex-direction: column;
   justify-content: flex-end;
   margin-bottom: 4%;
+}
+
+.pagination > .active > a,
+.pagination > .active > a:focus,
+.pagination > .active > a:hover,
+.pagination > .active > span,
+.pagination > .active > span:focus,
+.pagination > .active > span:hover {
+  background-color: #00d3cf;
+  border-color: #00d3cf;
+  outline: none;
+}
+
+.pagination > li > a,
+.pagination > li > span {
+  color: #00d3cf;
+}
+
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover {
+  color: #555;
+  outline: none;
 }

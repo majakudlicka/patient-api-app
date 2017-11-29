@@ -80,7 +80,6 @@ class allPatients extends Component {
 
   handlePageClick = data => {
     let page = data.selected + 1;
-    console.log(page);
     this.fetchPatients(page);
   };
 
@@ -96,7 +95,7 @@ class allPatients extends Component {
   };
 
   render() {
-    let {patients, filteredPatients} = this.props;
+    let {filteredPatients} = this.props;
 
     if (this.state.patients.length === 0) {
       return (
@@ -109,7 +108,7 @@ class allPatients extends Component {
         <div className="wrapper">
           <div className="flex-container">
             <form onSubmit={this.onSubmitCriteria}>
-              <label className="brown_title">Search&nbsp;&nbsp;</label>
+              <label>Search&nbsp;&nbsp;</label>
               <input
                 id="Search Title"
                 type="text"
@@ -142,7 +141,7 @@ class allPatients extends Component {
         <div className="wrapper">
           <div className="flex-container">
             <form onSubmit={this.onSubmitCriteria}>
-              <label className="brown_title">Search&nbsp;&nbsp;</label>
+              <label>Search&nbsp;&nbsp;</label>
               <input
                 id="Search Title"
                 type="text"
@@ -168,20 +167,21 @@ class allPatients extends Component {
               {this.state.patients.map(this.renderPatients)}
             </tbody>
           </table>
-          <ReactPaginate
-            previousLabel={'previous'}
-            nextLabel={'next'}
-            breakLabel={<a href="">...</a>}
-            breakClassName={'break-me'}
-            pageCount={100}
-            marginPagesDisplayed={2}
-            pageRangeDisplayed={5}
-            onPageChange={this.handlePageClick}
-            containerClassName={'pagination'}
-            subContainerClassName={'pages pagination'}
-            activeClassName={'active'}
-            hrefBuilder={this.hrefBuilder}
-          />
+          <div className="flex-container">
+            <ReactPaginate
+              previousLabel={'previous'}
+              nextLabel={'next'}
+              breakLabel={<a href="">...</a>}
+              breakClassName={'break-me'}
+              pageCount={100}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+              containerClassName={'pagination'}
+              subContainerClassName={'pages pagination'}
+              activeClassName={'active'}
+              onPageChange={this.handlePageClick}
+            />
+          </div>
         </div>
       );
     }
@@ -197,57 +197,3 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, actions)(allPatients);
-
-// <div class="container" id="content" />
-// <ul className="pagination">
-//   <li className="page-item">
-//     <a className="page-link" href="?page=1">
-//       1
-//     </a>
-//   </li>
-//   <li className="page-item">
-//     <a className="page-link" href="?page=2">
-//       2
-//     </a>
-//   </li>
-//   <li className="page-item">
-//     <a className="page-link" href="?page=3">
-//       3
-//     </a>
-//   </li>
-//   <li className="page-item">
-//     <a className="page-link" href="?page=4">
-//       4
-//     </a>
-//   </li>
-//   <li className="page-item">
-//     <a className="page-link" href="?page=4">
-//       5
-//     </a>
-//   </li>
-//   <li className="page-item">
-//     <a className="page-link" href="?page=4">
-//       6
-//     </a>
-//   </li>
-//   <li className="page-item">
-//     <a className="page-link" href="?page=4">
-//       7
-//     </a>
-//   </li>
-//   <li className="page-item">
-//     <a className="page-link" href="?page=4">
-//       8
-//     </a>
-//   </li>
-//   <li className="page-item">
-//     <a className="page-link" href="?page=4">
-//       9
-//     </a>
-//   </li>
-//   <li className="page-item">
-//     <a className="page-link" href="?page=4">
-//       10
-//     </a>
-//   </li>
-// </ul>
