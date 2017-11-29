@@ -16,8 +16,13 @@ router.get('/patient/:id', function(req, res) {
 
 //Route for all patient
 router.get('/patient', function(req, res) {
-  let page = req.query.page;
-  let url = `https://api.interview.healthforge.io/api/patient?size=10&page=${page}`;
+  let url;
+  if (req.query.page) {
+    let page = req.query.page;
+    url = `https://api.interview.healthforge.io/api/patient?size=10&page=${page}`;
+  } else {
+    url = 'https://api.interview.healthforge.io/api/patient?size=1000';
+  }
   request(url, function(error, response, body) {
     console.log('error:', error); // Print the error if one occurred
     console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received

@@ -16,8 +16,10 @@ class allPatients extends Component {
     this.formatBirthDate = this.formatBirthDate.bind(this);
     this.handlePageClick = this.handlePageClick.bind(this);
     this.fetchPatients = this.fetchPatients.bind(this);
+    this.fetchAllPatients = this.fetchAllPatients.bind(this);
 
     this.state = {
+      allPatients: [],
       searchTerm: '',
       patients: [],
       filteredPatients: null,
@@ -25,7 +27,7 @@ class allPatients extends Component {
   }
 
   componentWillMount() {
-    this.fetchPatients();
+    this.fetchAllPatients();
   }
 
   formatBirthDate(date) {
@@ -80,15 +82,36 @@ class allPatients extends Component {
   }
 
   handlePageClick = data => {
-    let page = data.selected + 1;
-    this.fetchPatients(page);
+    const patientsPerPage = 10;
+    const page = data.selected;
+    const startIndex = page * patientsPerPage;
+    const endIndex = page * patientsPerPage + 10;
+    const PatientsOnPage = this.state.Allpatients.slice(startIndex, endIndex);
+    this.setState({patients: PatientsOnPage});
+    // this.fetchPatients(page);
   };
 
   fetchPatients = (page = 1) => {
     axios
       .get('/patient', {params: {page: page}})
       .then(response => {
-        this.setState({patients: response.data.content});
+        this.setState({
+          patients: response.data.content,
+        });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  fetchAllPatients = () => {
+    axios
+      .get('/patient')
+      .then(response => {
+        this.setState({
+          Allpatients: response.data.content,
+          patients: response.data.content.slice(0, 10),
+        });
       })
       .catch(err => {
         console.log(err);
@@ -113,7 +136,7 @@ class allPatients extends Component {
           <LoadingIndicator />
         </div>
       );
-    } else if (this.state.filetredPatients !== null) {
+    } else if (this.state.filteredPatients !== null) {
       return (
         <div className="wrapper">
           <div className="flex-container">
@@ -199,7 +222,6 @@ class allPatients extends Component {
 }
 
 function mapStateToProps(state) {
-  console.log(state.searchPatients);
   return {
     patients: state.searchPatients.patients,
     filteredPatients: state.searchPatients.filteredPatients,
