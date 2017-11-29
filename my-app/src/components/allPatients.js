@@ -3,6 +3,8 @@ import {connect} from 'react-redux';
 import * as actions from '../actions/fetchData.js';
 import LoadingIndicator from 'react-loading-indicator';
 import {Link} from 'react-router';
+import ReactPaginate from 'react-paginate';
+import axios from 'axios';
 
 class allPatients extends Component {
   constructor() {
@@ -12,14 +14,17 @@ class allPatients extends Component {
     this.onCriteriaChange = this.onCriteriaChange.bind(this);
     this.onSubmitId = this.onSubmitId.bind(this);
     this.formatBirthDate = this.formatBirthDate.bind(this);
+    this.handlePageClick = this.handlePageClick.bind(this);
+    this.fetchPatients = this.fetchPatients.bind(this);
 
     this.state = {
       searchTerm: '',
+      patients: [],
     };
   }
 
   componentWillMount() {
-    this.props.fetchPatients();
+    this.fetchPatients();
   }
 
   formatBirthDate(date) {
@@ -49,7 +54,6 @@ class allPatients extends Component {
           {formattedDateOfBirth}
         </td>
       </tr>
-      // </Link>
     );
   }
 
@@ -74,10 +78,27 @@ class allPatients extends Component {
     );
   }
 
+  handlePageClick = data => {
+    let page = data.selected + 1;
+    console.log(page);
+    this.fetchPatients(page);
+  };
+
+  fetchPatients = (page = 1) => {
+    axios
+      .get('/patient', {params: {page: page}})
+      .then(response => {
+        this.setState({patients: response.data.content});
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   render() {
     let {patients, filteredPatients} = this.props;
 
-    if (!patients) {
+    if (this.state.patients.length === 0) {
       return (
         <div className="flex-container">
           <LoadingIndicator />
@@ -144,9 +165,23 @@ class allPatients extends Component {
               </tr>
             </thead>
             <tbody>
-              {patients.map(this.renderPatients)}
+              {this.state.patients.map(this.renderPatients)}
             </tbody>
           </table>
+          <ReactPaginate
+            previousLabel={'previous'}
+            nextLabel={'next'}
+            breakLabel={<a href="">...</a>}
+            breakClassName={'break-me'}
+            pageCount={100}
+            marginPagesDisplayed={2}
+            pageRangeDisplayed={5}
+            onPageChange={this.handlePageClick}
+            containerClassName={'pagination'}
+            subContainerClassName={'pages pagination'}
+            activeClassName={'active'}
+            hrefBuilder={this.hrefBuilder}
+          />
         </div>
       );
     }
@@ -162,3 +197,57 @@ function mapStateToProps(state) {
 }
 
 export default connect(mapStateToProps, actions)(allPatients);
+
+// <div class="container" id="content" />
+// <ul className="pagination">
+//   <li className="page-item">
+//     <a className="page-link" href="?page=1">
+//       1
+//     </a>
+//   </li>
+//   <li className="page-item">
+//     <a className="page-link" href="?page=2">
+//       2
+//     </a>
+//   </li>
+//   <li className="page-item">
+//     <a className="page-link" href="?page=3">
+//       3
+//     </a>
+//   </li>
+//   <li className="page-item">
+//     <a className="page-link" href="?page=4">
+//       4
+//     </a>
+//   </li>
+//   <li className="page-item">
+//     <a className="page-link" href="?page=4">
+//       5
+//     </a>
+//   </li>
+//   <li className="page-item">
+//     <a className="page-link" href="?page=4">
+//       6
+//     </a>
+//   </li>
+//   <li className="page-item">
+//     <a className="page-link" href="?page=4">
+//       7
+//     </a>
+//   </li>
+//   <li className="page-item">
+//     <a className="page-link" href="?page=4">
+//       8
+//     </a>
+//   </li>
+//   <li className="page-item">
+//     <a className="page-link" href="?page=4">
+//       9
+//     </a>
+//   </li>
+//   <li className="page-item">
+//     <a className="page-link" href="?page=4">
+//       10
+//     </a>
+//   </li>
+// </ul>

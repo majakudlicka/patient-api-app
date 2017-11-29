@@ -6,14 +6,14 @@ import {
 } from '../constants/action_types.js';
 
 //Fetches all Patients - async
-export const fetchPatients = () => dispatch => {
+export const fetchPatients = (page = 1) => dispatch => {
   dispatch({
     type: FETCH_PATIENTS,
     status: 'pending',
   });
 
   axios
-    .get('/patient')
+    .get('/patient', {params: {page: page}})
     .then(response =>
       dispatch({
         type: FETCH_PATIENTS,

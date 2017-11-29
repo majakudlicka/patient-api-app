@@ -9,6 +9,7 @@ import homeReducer from './reducers/index.js';
 import allPatients from './components/allPatients.js';
 import patientDetail from './components/patientDetail.js';
 import notFound from './components/notFound.js';
+import App from './components/pagination.js';
 import registerServiceWorker from './registerServiceWorker';
 
 const store = createStore(
