@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import * as actions from '../actions/fetchData.js';
 import LoadingIndicator from 'react-loading-indicator';
 import {Link} from 'react-router';
 import ReactPaginate from 'react-paginate';
@@ -22,6 +20,7 @@ class allPatients extends Component {
       allPatients: [],
       searchTerm: '',
       patients: [],
+      allFilteredPatients: null,
       filteredPatients: null,
       sortCriteria: '',
     };
@@ -77,8 +76,20 @@ class allPatients extends Component {
     const page = data.selected;
     const startIndex = page * patientsPerPage;
     const endIndex = page * patientsPerPage + 10;
-    const PatientsOnPage = this.state.allPatients.slice(startIndex, endIndex);
-    this.setState({patients: PatientsOnPage});
+    let PatientsOnPage;
+    if (
+      this.state.allFilteredPatients !== null &&
+      this.state.allFilteredPatients.length > 0
+    ) {
+      PatientsOnPage = this.state.allFilteredPatients.slice(
+        startIndex,
+        endIndex
+      );
+      this.setState({filteredPatients: PatientsOnPage});
+    } else {
+      PatientsOnPage = this.state.allPatients.slice(startIndex, endIndex);
+      this.setState({patients: PatientsOnPage});
+    }
   };
 
   fetchAllPatients = () => {
@@ -100,7 +111,7 @@ class allPatients extends Component {
   };
 
   filterPatients = searchTerm => {
-    let filteredPatients = this.state.allPatients.filter(patient => {
+    let allFilteredPatients = this.state.allPatients.filter(patient => {
       return (
         patient.lastName.includes(searchTerm) ||
         patient.firstName.includes(searchTerm) ||
@@ -109,13 +120,15 @@ class allPatients extends Component {
       );
     });
     this.setState({
-      filteredPatients: filteredPatients,
+      allFilteredPatients: allFilteredPatients,
+      filteredPatients: allFilteredPatients.slice(0, 10),
     });
   };
 
   sortPatients(evt) {
     evt.preventDefault();
     let sortedPatients;
+    let sortedFilteredPatients;
 
     switch (this.state.sortCriteria) {
       case 'By Last Name Asc':
@@ -156,6 +169,57 @@ class allPatients extends Component {
             : a.dateOfBirth > b.dateOfBirth ? -1 : 0;
         });
         break;
+    }
+
+    if (this.state.filteredPatients !== null) {
+      switch (this.state.sortCriteria) {
+        case 'By Last Name Asc':
+          sortedFilteredPatients = this.state.filteredPatients.sort((a, b) => {
+            return a.lastName < b.lastName
+              ? -1
+              : a.lastName > b.lastName ? 1 : 0;
+          });
+          break;
+        case 'By Last Name Desc':
+          sortedFilteredPatients = this.state.filteredPatients.sort((a, b) => {
+            return a.lastName < b.lastName
+              ? 1
+              : a.lastName > b.lastName ? -1 : 0;
+          });
+          break;
+        case 'By First Name Asc':
+          sortedFilteredPatients = this.state.filteredPatients.sort((a, b) => {
+            return a.firstName < b.firstName
+              ? -1
+              : a.firstName > b.firstName ? 1 : 0;
+          });
+          break;
+        case 'By First Name Desc':
+          sortedFilteredPatients = this.state.filteredPatients.sort((a, b) => {
+            return a.firstName < b.firstName
+              ? 1
+              : a.firstName > b.firstName ? -1 : 0;
+          });
+          break;
+        case 'By DOB Asc':
+          sortedFilteredPatients = this.state.filteredPatients.sort((a, b) => {
+            return a.dateOfBirth < b.dateOfBirth
+              ? -1
+              : a.dateOfBirth > b.dateOfBirth ? 1 : 0;
+          });
+          break;
+        case 'By DOB Desc':
+          sortedFilteredPatients = this.state.filteredPatients.sort((a, b) => {
+            return a.dateOfBirth < b.dateOfBirth
+              ? 1
+              : a.dateOfBirth > b.dateOfBirth ? -1 : 0;
+          });
+          break;
+      }
+
+      this.setState({
+        filteredPatients: sortedFilteredPatients,
+      });
     }
 
     this.setState({
@@ -200,17 +264,22 @@ class allPatients extends Component {
 
           <div className="flex-container">
             <form>
-              <label>Sort&nbsp;&nbsp;</label>
-              <input list="sorting_options">
-                <datalist>
-                  <option value="Last Name Asc" />
-                  <option value="Last Name Desc" />
-                  <option value="First Name Asc" />
-                  <option value="First Name Desc" />
-                  <option value="DOB Asc" />
-                  <option value="DOB Desc" />
-                </datalist>
-              </input>
+              <label>
+                Sort by:&nbsp;&nbsp;
+                <input
+                  list="sorting_options"
+                  value={this.state.sortCriteria}
+                  onChange={this.onSortCriteriaChange}
+                />&nbsp;&nbsp;
+              </label>
+              <datalist id="sorting_options">
+                <option value="By Last Name Asc" />
+                <option value="By Last Name Desc" />
+                <option value="By First Name Asc" />
+                <option value="By First Name Desc" />
+                <option value="By DOB Asc" />
+                <option value="By DOB Desc" />
+              </datalist>
             </form>
 
             <button type="submit" onClick={this.sortPatients}>
@@ -230,6 +299,21 @@ class allPatients extends Component {
               {this.state.filteredPatients.map(this.renderPatients)}
             </tbody>
           </table>
+          <div className="flex-container">
+            <ReactPaginate
+              previousLabel={'Previous'}
+              nextLabel={'Next'}
+              breakLabel={<a href="">...</a>}
+              breakClassName={'break-me'}
+              pageCount={100}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+              containerClassName={'pagination'}
+              subContainerClassName={'pages pagination'}
+              activeClassName={'active'}
+              onPageChange={this.handlePageClick}
+            />
+          </div>
         </div>
       );
     } else {
@@ -311,11 +395,4 @@ class allPatients extends Component {
   }
 }
 
-function mapStateToProps(state) {
-  return {
-    patients: state.searchPatients.patients,
-    filteredPatients: state.searchPatients.filteredPatients,
-  };
-}
-
-export default connect(mapStateToProps, actions)(allPatients);
+export default allPatients;
