@@ -13,15 +13,17 @@ class allPatients extends Component {
     this.onLastNameChange = this.onLastNameChange.bind(this);
     this.formatBirthDate = this.formatBirthDate.bind(this);
     this.handlePageClick = this.handlePageClick.bind(this);
-    // this.fetchPatients = this.fetchPatients.bind(this);
     this.fetchAllPatients = this.fetchAllPatients.bind(this);
     this.resetFilters = this.resetFilters.bind(this);
+    this.sortPatients = this.sortPatients.bind(this);
+    this.onSortCriteriaChange = this.onSortCriteriaChange.bind(this);
 
     this.state = {
       allPatients: [],
       searchTerm: '',
       patients: [],
       filteredPatients: null,
+      sortCriteria: '',
     };
   }
 
@@ -77,21 +79,7 @@ class allPatients extends Component {
     const endIndex = page * patientsPerPage + 10;
     const PatientsOnPage = this.state.allPatients.slice(startIndex, endIndex);
     this.setState({patients: PatientsOnPage});
-    // this.fetchPatients(page);
   };
-
-  // fetchPatients = (page = 1) => {
-  //   axios
-  //     .get('/patient', {params: {page: page}})
-  //     .then(response => {
-  //       this.setState({
-  //         patients: response.data.content,
-  //       });
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // };
 
   fetchAllPatients = () => {
     axios
@@ -125,6 +113,63 @@ class allPatients extends Component {
     });
   };
 
+  sortPatients(evt) {
+    evt.preventDefault();
+    let sortedPatients;
+
+    switch (this.state.sortCriteria) {
+      case 'By Last Name Asc':
+        sortedPatients = this.state.allPatients.sort((a, b) => {
+          return a.lastName < b.lastName ? -1 : a.lastName > b.lastName ? 1 : 0;
+        });
+        break;
+      case 'By Last Name Desc':
+        sortedPatients = this.state.allPatients.sort((a, b) => {
+          return a.lastName < b.lastName ? 1 : a.lastName > b.lastName ? -1 : 0;
+        });
+        break;
+      case 'By First Name Asc':
+        sortedPatients = this.state.allPatients.sort((a, b) => {
+          return a.firstName < b.firstName
+            ? -1
+            : a.firstName > b.firstName ? 1 : 0;
+        });
+        break;
+      case 'By First Name Desc':
+        sortedPatients = this.state.allPatients.sort((a, b) => {
+          return a.firstName < b.firstName
+            ? 1
+            : a.firstName > b.firstName ? -1 : 0;
+        });
+        break;
+      case 'By DOB Asc':
+        sortedPatients = this.state.allPatients.sort((a, b) => {
+          return a.dateOfBirth < b.dateOfBirth
+            ? -1
+            : a.dateOfBirth > b.dateOfBirth ? 1 : 0;
+        });
+        break;
+      case 'By DOB Desc':
+        sortedPatients = this.state.allPatients.sort((a, b) => {
+          return a.dateOfBirth < b.dateOfBirth
+            ? 1
+            : a.dateOfBirth > b.dateOfBirth ? -1 : 0;
+        });
+        break;
+    }
+
+    this.setState({
+      allPatients: sortedPatients,
+      patients: sortedPatients.slice(0, 10),
+    });
+  }
+
+  onSortCriteriaChange(evt) {
+    this.setState({
+      sortCriteria: evt.target.value,
+    });
+  }
+
   render() {
     if (this.state.patients.length === 0) {
       return (
@@ -136,7 +181,7 @@ class allPatients extends Component {
       return (
         <div className="wrapper">
           <div className="flex-container">
-            <form onSubmit={this.onSubmitCriteria}>
+            <form>
               <label>
                 Search (last Name, first Name, DOB or zip code)&nbsp;&nbsp;
               </label>
@@ -150,6 +195,26 @@ class allPatients extends Component {
 
             <button type="submit" onClick={this.resetFilters}>
               Reset
+            </button>
+          </div>
+
+          <div className="flex-container">
+            <form>
+              <label>Sort&nbsp;&nbsp;</label>
+              <input list="sorting_options">
+                <datalist>
+                  <option value="Last Name Asc" />
+                  <option value="Last Name Desc" />
+                  <option value="First Name Asc" />
+                  <option value="First Name Desc" />
+                  <option value="DOB Asc" />
+                  <option value="DOB Desc" />
+                </datalist>
+              </input>
+            </form>
+
+            <button type="submit" onClick={this.sortPatients}>
+              Submit
             </button>
           </div>
 
@@ -188,6 +253,31 @@ class allPatients extends Component {
             </button>
           </div>
 
+          <div className="flex-container">
+            <form>
+              <label>
+                Sort by:&nbsp;&nbsp;
+                <input
+                  list="sorting_options"
+                  value={this.state.sortCriteria}
+                  onChange={this.onSortCriteriaChange}
+                />&nbsp;&nbsp;
+              </label>
+              <datalist id="sorting_options">
+                <option value="By Last Name Asc" />
+                <option value="By Last Name Desc" />
+                <option value="By First Name Asc" />
+                <option value="By First Name Desc" />
+                <option value="By DOB Asc" />
+                <option value="By DOB Desc" />
+              </datalist>
+            </form>
+
+            <button type="submit" onClick={this.sortPatients}>
+              Submit
+            </button>
+          </div>
+
           <table className="table_all_patients">
             <thead>
               <tr>
@@ -202,8 +292,8 @@ class allPatients extends Component {
           </table>
           <div className="flex-container">
             <ReactPaginate
-              previousLabel={'previous'}
-              nextLabel={'next'}
+              previousLabel={'Previous'}
+              nextLabel={'Next'}
               breakLabel={<a href="">...</a>}
               breakClassName={'break-me'}
               pageCount={100}
