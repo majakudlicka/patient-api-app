@@ -1,18 +1,22 @@
 import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import * as actions from '../actions/fetchData.js';
 import LoadingIndicator from 'react-loading-indicator';
 import {Link} from 'react-router';
+import axios from 'axios';
 
 class patientById extends Component {
   constructor() {
     super();
     this.formatBirthDate = this.formatBirthDate.bind(this);
     this.renderPatient = this.renderPatient.bind(this);
+    this.fetchById = this.fetchById.bind(this);
+
+    this.state = {
+      patientData: {},
+    };
   }
 
   componentWillMount() {
-    this.props.fetchById(this.props.patientId);
+    this.fetchById(this.props.params.id);
   }
 
   formatBirthDate(date) {
@@ -21,6 +25,15 @@ class patientById extends Component {
     const day = date.slice(8, 10);
 
     return `${day}/${month}/${year}`;
+  }
+
+  fetchById(id) {
+    axios
+      .get(`/patient/${id}`)
+      .then(response => this.setState({patientData: response.data}))
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   renderPatient(patientData) {
@@ -91,9 +104,7 @@ class patientById extends Component {
   }
 
   render() {
-    let {patientData} = this.props;
-
-    if (!patientData) {
+    if (this.state.patientData.length === 0) {
       return (
         <div className="flex-container">
           <LoadingIndicator />
@@ -102,19 +113,11 @@ class patientById extends Component {
     } else {
       return (
         <div className="flex-container">
-          {this.renderPatient(patientData)}
+          {this.renderPatient(this.state.patientData)}
         </div>
       );
     }
   }
 }
 
-function mapStateToProps(state, ownProps) {
-  console.log(state.searchPatients.patientData);
-  return {
-    patientId: ownProps.params.id,
-    patientData: state.searchPatients.patientData,
-  };
-}
-
-export default connect(mapStateToProps, actions)(patientById);
+export default patientById;

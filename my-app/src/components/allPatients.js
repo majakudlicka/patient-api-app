@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import LoadingIndicator from 'react-loading-indicator';
 import {Link} from 'react-router';
 import Pagination from './pagination.js';
-
 import axios from 'axios';
 
 class allPatients extends Component {
@@ -101,7 +100,7 @@ class allPatients extends Component {
       .get('/patient')
       .then(response => {
         this.setState({
-          allPatients: response,
+          allPatients: response.data.content,
           patients: response.data.content.slice(0, 10),
         });
       })
