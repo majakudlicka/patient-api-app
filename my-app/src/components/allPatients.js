@@ -15,6 +15,8 @@ class allPatients extends Component {
     this.resetFilters = this.resetFilters.bind(this);
     this.sortPatients = this.sortPatients.bind(this);
     this.onSortCriteriaChange = this.onSortCriteriaChange.bind(this);
+    this.sortAsc = this.sortAsc.bind(this);
+    this.sortDesc = this.sortDesc.bind(this);
 
     this.state = {
       allPatients: [],
@@ -76,6 +78,7 @@ class allPatients extends Component {
     const page = data.selected;
     const startIndex = page * patientsPerPage;
     const endIndex = page * patientsPerPage + 10;
+
     let PatientsOnPage;
     if (
       this.state.allFilteredPatients !== null &&
@@ -125,6 +128,14 @@ class allPatients extends Component {
     });
   };
 
+  sortAsc(a, b) {
+    return a < b ? -1 : a > b ? 1 : 0;
+  }
+
+  sortDesc(a, b) {
+    return a < b ? 1 : a > b ? -1 : 0;
+  }
+
   sortPatients(evt) {
     evt.preventDefault();
     let sortedPatients;
@@ -133,40 +144,32 @@ class allPatients extends Component {
     switch (this.state.sortCriteria) {
       case 'By Last Name Asc':
         sortedPatients = this.state.allPatients.sort((a, b) => {
-          return a.lastName < b.lastName ? -1 : a.lastName > b.lastName ? 1 : 0;
+          return this.sortAsc(a.lastName, b.lastName);
         });
         break;
       case 'By Last Name Desc':
         sortedPatients = this.state.allPatients.sort((a, b) => {
-          return a.lastName < b.lastName ? 1 : a.lastName > b.lastName ? -1 : 0;
+          return this.sortDesc(a.lastName, b.lastName);
         });
         break;
       case 'By First Name Asc':
         sortedPatients = this.state.allPatients.sort((a, b) => {
-          return a.firstName < b.firstName
-            ? -1
-            : a.firstName > b.firstName ? 1 : 0;
+          return this.sortAsc(a.firstName, b.firstName);
         });
         break;
       case 'By First Name Desc':
         sortedPatients = this.state.allPatients.sort((a, b) => {
-          return a.firstName < b.firstName
-            ? 1
-            : a.firstName > b.firstName ? -1 : 0;
+          return this.sortDesc(a.firstName, b.firstName);
         });
         break;
       case 'By DOB Asc':
         sortedPatients = this.state.allPatients.sort((a, b) => {
-          return a.dateOfBirth < b.dateOfBirth
-            ? -1
-            : a.dateOfBirth > b.dateOfBirth ? 1 : 0;
+          return this.sortAsc(a.dateOfBirth, b.dateOfBirth);
         });
         break;
       case 'By DOB Desc':
         sortedPatients = this.state.allPatients.sort((a, b) => {
-          return a.dateOfBirth < b.dateOfBirth
-            ? 1
-            : a.dateOfBirth > b.dateOfBirth ? -1 : 0;
+          return this.sortDesc(a.dateOfBirth, b.dateOfBirth);
         });
         break;
     }
@@ -174,51 +177,40 @@ class allPatients extends Component {
     if (this.state.filteredPatients !== null) {
       switch (this.state.sortCriteria) {
         case 'By Last Name Asc':
-          sortedFilteredPatients = this.state.filteredPatients.sort((a, b) => {
-            return a.lastName < b.lastName
-              ? -1
-              : a.lastName > b.lastName ? 1 : 0;
+          sortedFilteredPatients = this.state.allPatients.sort((a, b) => {
+            return this.sortAsc(a.lastName, b.lastName);
           });
           break;
         case 'By Last Name Desc':
-          sortedFilteredPatients = this.state.filteredPatients.sort((a, b) => {
-            return a.lastName < b.lastName
-              ? 1
-              : a.lastName > b.lastName ? -1 : 0;
+          sortedFilteredPatients = this.state.allPatients.sort((a, b) => {
+            return this.sortDesc(a.lastName, b.lastName);
           });
           break;
         case 'By First Name Asc':
-          sortedFilteredPatients = this.state.filteredPatients.sort((a, b) => {
-            return a.firstName < b.firstName
-              ? -1
-              : a.firstName > b.firstName ? 1 : 0;
+          sortedFilteredPatients = this.state.allPatients.sort((a, b) => {
+            return this.sortAsc(a.firstName, b.firstName);
           });
           break;
         case 'By First Name Desc':
-          sortedFilteredPatients = this.state.filteredPatients.sort((a, b) => {
-            return a.firstName < b.firstName
-              ? 1
-              : a.firstName > b.firstName ? -1 : 0;
+          sortedFilteredPatients = this.state.allPatients.sort((a, b) => {
+            return this.sortDesc(a.firstName, b.firstName);
           });
           break;
         case 'By DOB Asc':
-          sortedFilteredPatients = this.state.filteredPatients.sort((a, b) => {
-            return a.dateOfBirth < b.dateOfBirth
-              ? -1
-              : a.dateOfBirth > b.dateOfBirth ? 1 : 0;
+          sortedFilteredPatients = this.state.allPatients.sort((a, b) => {
+            return this.sortAsc(a.dateOfBirth, b.dateOfBirth);
           });
           break;
         case 'By DOB Desc':
-          sortedFilteredPatients = this.state.filteredPatients.sort((a, b) => {
-            return a.dateOfBirth < b.dateOfBirth
-              ? 1
-              : a.dateOfBirth > b.dateOfBirth ? -1 : 0;
+          sortedFilteredPatients = this.state.allPatients.sort((a, b) => {
+            return this.sortDesc(a.dateOfBirth, b.dateOfBirth);
           });
           break;
       }
 
       this.setState({
-        filteredPatients: sortedFilteredPatients,
+        allFilteredPatients: sortedFilteredPatients,
+        filteredPatients: sortedFilteredPatients.slice(0, 10),
       });
     }
 
