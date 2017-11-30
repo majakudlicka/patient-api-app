@@ -1,7 +1,8 @@
 import React, {Component} from 'react';
 import LoadingIndicator from 'react-loading-indicator';
 import {Link} from 'react-router';
-import ReactPaginate from 'react-paginate';
+import Pagination from './pagination.js';
+
 import axios from 'axios';
 
 class allPatients extends Component {
@@ -100,7 +101,7 @@ class allPatients extends Component {
       .get('/patient')
       .then(response => {
         this.setState({
-          allPatients: response.data.content,
+          allPatients: response,
           patients: response.data.content.slice(0, 10),
         });
       })
@@ -233,81 +234,6 @@ class allPatients extends Component {
           <LoadingIndicator />
         </div>
       );
-    } else if (this.state.filteredPatients !== null) {
-      return (
-        <div className="wrapper">
-          <div className="flex-container">
-            <form>
-              <label>
-                Search (last Name, first Name, DOB or zip code)&nbsp;&nbsp;
-              </label>
-              <input
-                id="Search Title"
-                type="text"
-                value={this.state.searchTerm}
-                onChange={this.onLastNameChange}
-              />&nbsp;&nbsp;&nbsp;&nbsp;
-            </form>
-
-            <button type="submit" onClick={this.resetFilters}>
-              Reset
-            </button>
-          </div>
-
-          <div className="flex-container">
-            <form>
-              <label>
-                Sort by:&nbsp;&nbsp;
-                <input
-                  list="sorting_options"
-                  value={this.state.sortCriteria}
-                  onChange={this.onSortCriteriaChange}
-                />&nbsp;&nbsp;
-              </label>
-              <datalist id="sorting_options">
-                <option value="By Last Name Asc" />
-                <option value="By Last Name Desc" />
-                <option value="By First Name Asc" />
-                <option value="By First Name Desc" />
-                <option value="By DOB Asc" />
-                <option value="By DOB Desc" />
-              </datalist>
-            </form>
-
-            <button type="submit" onClick={this.sortPatients}>
-              Submit
-            </button>
-          </div>
-
-          <table className="table_all_patients">
-            <thead>
-              <tr>
-                <th>Last Name</th>
-                <th>First Name</th>
-                <th>Date of Birth</th>
-              </tr>
-            </thead>
-            <tbody>
-              {this.state.filteredPatients.map(this.renderPatients)}
-            </tbody>
-          </table>
-          <div className="flex-container">
-            <ReactPaginate
-              previousLabel={'Previous'}
-              nextLabel={'Next'}
-              breakLabel={<a href="">...</a>}
-              breakClassName={'break-me'}
-              pageCount={100}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={5}
-              containerClassName={'pagination'}
-              subContainerClassName={'pages pagination'}
-              activeClassName={'active'}
-              onPageChange={this.handlePageClick}
-            />
-          </div>
-        </div>
-      );
     } else {
       return (
         <div className="wrapper">
@@ -328,7 +254,6 @@ class allPatients extends Component {
               Reset
             </button>
           </div>
-
           <div className="flex-container">
             <form>
               <label>
@@ -353,7 +278,6 @@ class allPatients extends Component {
               Submit
             </button>
           </div>
-
           <table className="table_all_patients">
             <thead>
               <tr>
@@ -363,24 +287,12 @@ class allPatients extends Component {
               </tr>
             </thead>
             <tbody>
-              {this.state.patients.map(this.renderPatients)}
+              {this.state.filteredPatients !== null
+                ? this.state.filteredPatients.map(this.renderPatients)
+                : this.state.patients.map(this.renderPatients)}
             </tbody>
           </table>
-          <div className="flex-container">
-            <ReactPaginate
-              previousLabel={'Previous'}
-              nextLabel={'Next'}
-              breakLabel={<a href="">...</a>}
-              breakClassName={'break-me'}
-              pageCount={100}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={5}
-              containerClassName={'pagination'}
-              subContainerClassName={'pages pagination'}
-              activeClassName={'active'}
-              onPageChange={this.handlePageClick}
-            />
-          </div>
+          <Pagination onPageChange={this.handlePageClick} />
         </div>
       );
     }
