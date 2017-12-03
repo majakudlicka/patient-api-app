@@ -4,11 +4,11 @@ const pageCount = 100;
 const pageRangeDisplayed = 5;
 const marginPagesDisplayed = 2;
 
+//Pagination component
 class Pagination extends Component {
-  constructor() {
-    super();
-  }
-
+  //ES2015 provides a default class constructor if one is not specified.
+  // As such, it is unnecessary to provide the constructor  that simply delegates
+  // into its parent class
   render() {
     return (
       <div className="flex-container">

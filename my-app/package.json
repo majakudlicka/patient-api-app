@@ -4,18 +4,13 @@
   "private": true,
   "dependencies": {
     "axios": "^0.17.1",
-    "enzyme": "^3.0.0",
-    "enzyme-adapter-react-15": "^1.0.5",
-    "jest": "^21.2.1",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-loading-indicator": "^1.0.2",
     "react-paginate": "^5.0.0",
     "react-router": "^2.1.0",
     "react-router-dom": "^4.2.2",
-    "react-scripts": "1.0.17",
-    "react-test-renderer": "^15.5.0",
-    "supertest": "^3.0.0"
+    "react-scripts": "1.0.17"
   },
   "scripts": {
     "start": "node node_modules/react-scripts/scripts/start.js",
@@ -25,8 +20,12 @@
   },
   "proxy": "http://localhost:8080",
   "devDependencies": {
+    "enzyme": "^3.0.0",
+    "enzyme-adapter-react-15": "^1.0.5",
+    "jest": "^21.2.1",
     "babel-jest": "^21.2.0",
     "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-2": "^6.24.1"
+    "babel-preset-stage-2": "^6.24.1",
+    "supertest": "^3.0.0"
   }
 }

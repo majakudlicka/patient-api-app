@@ -4,49 +4,46 @@ import Adapter from 'enzyme-adapter-react-15';
 import allPatients from '../components/allPatients.js';
 import NotFound from '../components/notFound.js';
 import patientDetail from '../components/patientDetail.js';
+import Pagination from '../components/pagination.js';
+import ReactPaginate from 'react-paginate';
 
+//Configures enzyme adapter
 configure({adapter: new Adapter()});
 
-describe('allPatients', () => {
-  let mountedallPatients;
-  const allPatients = () => {
-    if (!mountedallPatients) {
-      mountedallPatients = mount(<allPatients />);
-    }
-    return mountedallPatients;
-  };
+//Tests React components --> as per individual test descriptions
+describe('React Components', () => {
+  it('Pagination Component is being rendered in a div with .flex-container class', () => {
+    const wrapper = shallow(<Pagination />);
+    expect(wrapper.find('.flex-container').length).toEqual(1);
+  });
+
+  it('Pagination Component renders a ReactPaginate component`', () => {
+    const wrapper = shallow(<Pagination />);
+    expect(wrapper.find(ReactPaginate).length).toBe(1);
+  });
+
+  it('Pagination Component has a property of pageCount that equals 100`', () => {
+    const wrapper = shallow(<Pagination />);
+    expect(wrapper.children().props().pageCount).toEqual(100);
+  });
+
+  it('Pagination Component has a property of activeClassName that is named active`', () => {
+    const wrapper = shallow(<Pagination />);
+    expect(wrapper.children().props().activeClassName).toEqual('active');
+  });
 
   it('NotFound Component is being rendered in a div with .flex-container class', () => {
     const wrapper = shallow(<NotFound />);
     expect(wrapper.find('.flex-container').length).toEqual(1);
   });
 
-  it('patientDetail Component is being rendered in a div with .flex-container class', () => {
-    const wrapper = shallow(<patientDetail />);
-    expect(wrapper.find('.flex-container').length).toEqual(1);
-  });
-
   it('allPatients component renders an object', () => {
-    const wrapper = mount(<allPatients />);
+    const wrapper = shallow(<allPatients />);
     expect(typeof wrapper).toEqual('object');
   });
 
-  it('contains everything else that gets rendered', () => {
-    const divs = allPatients().find('div');
-    const wrappingDiv = divs.first();
-    expect(wrappingDiv.children()).toEqual(allPatients().children());
+  it('patientById component renders an object', () => {
+    const wrapper = shallow(<patientById />);
+    expect(typeof wrapper).toEqual('object');
   });
-
-  // it('formatBirthDate function returns a correctly formatted date', () => {
-  //   const wrapper = shallow(<allPatients />);
-  //   console.log(wrapper.instance().sortAsc()); // true
-  // });
 });
-
-// describe('allPatients', () => {
-//   it('always renders a div', () => {
-//     const divs = allPatients.formatBirthDate('2017-02-22T16:09:24.386Z');
-//     console.log(divs);
-//     // expect(divs.length).toBeGreaterThan(0);
-//   });
-// });

@@ -1,10 +1,11 @@
 const request = require('supertest');
 const app = require('../server/app.js', {bustCache: true});
 
-//In case of slow database response
+//In case of slow API response
 jest.setTimeout(30000);
 
-//Testing the routes
+//Testing the routes -> as per individual test descriptions
+
 describe('Test the root path', () => {
   test('It should response with 200 status code', done => {
     request(app).get('/patient').then(response => {

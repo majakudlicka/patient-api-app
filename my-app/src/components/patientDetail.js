@@ -3,6 +3,7 @@ import LoadingIndicator from 'react-loading-indicator';
 import {Link} from 'react-router';
 import axios from 'axios';
 
+//Individal patient table
 class patientById extends Component {
   constructor() {
     super();
@@ -15,28 +16,32 @@ class patientById extends Component {
     };
   }
 
+  //React lifecycle method
   componentWillMount() {
     this.fetchById(this.props.params.id);
   }
 
-  formatBirthDate(date) {
+  //Formats birth date
+  formatBirthDate = date => {
     const year = date.slice(0, 4);
     const month = date.slice(5, 7);
     const day = date.slice(8, 10);
 
     return `${day}/${month}/${year}`;
-  }
+  };
 
-  fetchById(id) {
+  //Fetches patient by Id
+  fetchById = id => {
     axios
       .get(`/patient/${id}`)
       .then(response => this.setState({patientData: response.data}))
       .catch(err => {
         console.log(err);
       });
-  }
+  };
 
-  renderPatient(patientData) {
+  //Helper function to render patient data
+  renderPatient = patientData => {
     let formattedDateOfBirth;
     let zipCode;
     let phone;
@@ -101,8 +106,9 @@ class patientById extends Component {
         </tbody>
       </table>
     );
-  }
+  };
 
+  //Renders the component
   render() {
     if (this.state.patientData.length === 0) {
       return (
@@ -112,8 +118,17 @@ class patientById extends Component {
       );
     } else {
       return (
-        <div className="flex-container">
-          {this.renderPatient(this.state.patientData)}
+        <div>
+          <div className="flex-container">
+            {this.renderPatient(this.state.patientData)}
+          </div>
+          <div className="flex-container">
+            <Link to="/">
+              <h5>
+                <u>Back to results</u>
+              </h5>
+            </Link>
+          </div>
         </div>
       );
     }

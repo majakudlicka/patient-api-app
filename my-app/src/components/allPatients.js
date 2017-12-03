@@ -4,11 +4,13 @@ import {Link} from 'react-router';
 import Pagination from './pagination.js';
 import axios from 'axios';
 
+//Main component with allPatients table. Parent of Pagination and LoadingIndicator
+//components
 class allPatients extends Component {
   constructor() {
     super();
     this.renderPatients = this.renderPatients.bind(this);
-    this.onLastNameChange = this.onLastNameChange.bind(this);
+    this.onSearchTermChange = this.onSearchTermChange.bind(this);
     this.formatBirthDate = this.formatBirthDate.bind(this);
     this.handlePageClick = this.handlePageClick.bind(this);
     this.fetchAllPatients = this.fetchAllPatients.bind(this);
@@ -18,6 +20,7 @@ class allPatients extends Component {
     this.sortAsc = this.sortAsc.bind(this);
     this.sortDesc = this.sortDesc.bind(this);
 
+    //Initial state of the component
     this.state = {
       allPatients: [],
       searchTerm: '',
@@ -28,20 +31,22 @@ class allPatients extends Component {
     };
   }
 
+  //React lifecycle method
   componentWillMount() {
     this.fetchAllPatients();
   }
 
-  formatBirthDate(date) {
+  //Formates birth date
+  formatBirthDate = date => {
     const year = date.slice(0, 4);
     const month = date.slice(5, 7);
     const day = date.slice(8, 10);
 
     return `${day}/${month}/${year}`;
-  }
+  };
 
-  //Renders individual record
-  renderPatients(patient) {
+  //Helper function to render individual record
+  renderPatients = patient => {
     let formattedDateOfBirth = this.formatBirthDate(patient.dateOfBirth);
     return (
       <tr key={patient.identifiers[0].value}>
@@ -60,9 +65,10 @@ class allPatients extends Component {
         </td>
       </tr>
     );
-  }
+  };
 
-  onLastNameChange(evt) {
+  //Triggers dynamic filtering as user types into input field
+  onSearchTermChange = evt => {
     this.setState(
       {
         searchTerm: evt.target.value,
@@ -71,8 +77,9 @@ class allPatients extends Component {
         this.filterPatients(this.state.searchTerm);
       }
     );
-  }
+  };
 
+  //Handles pagination
   handlePageClick = data => {
     const patientsPerPage = 10;
     const page = data.selected;
@@ -95,6 +102,9 @@ class allPatients extends Component {
     }
   };
 
+  //Grabs all patients from database and saves it into the application state.
+  //All subsequent filtering is done on front end, taking advantage of high speed
+  //rendering of React components
   fetchAllPatients = () => {
     axios
       .get('/patient')
@@ -109,10 +119,13 @@ class allPatients extends Component {
       });
   };
 
+  //Resets searchTerm filter to initial state
   resetFilters = () => {
     this.setState({filteredPatients: null});
   };
 
+  //Filters all patients based on lastName, firstName, dateOfBirth and zipCode.
+  ///All filtering is done on front end to achieve more flexibility and speed
   filterPatients = searchTerm => {
     let allFilteredPatients = this.state.allPatients.filter(patient => {
       return (
@@ -128,15 +141,18 @@ class allPatients extends Component {
     });
   };
 
-  sortAsc(a, b) {
+  //Ascending sorting
+  sortAsc = (a, b) => {
     return a < b ? -1 : a > b ? 1 : 0;
-  }
+  };
 
-  sortDesc(a, b) {
+  //Descending sorting
+  sortDesc = (a, b) => {
     return a < b ? 1 : a > b ? -1 : 0;
-  }
+  };
 
-  sortPatients(evt) {
+  //Sorts patients table (or filetered patients table) depending on different criteria
+  sortPatients = evt => {
     evt.preventDefault();
     let sortedPatients;
     let sortedFilteredPatients;
@@ -218,14 +234,16 @@ class allPatients extends Component {
       allPatients: sortedPatients,
       patients: sortedPatients.slice(0, 10),
     });
-  }
+  };
 
-  onSortCriteriaChange(evt) {
+  //Updates sorting criterium
+  onSortCriteriaChange = evt => {
     this.setState({
       sortCriteria: evt.target.value,
     });
-  }
+  };
 
+  //Renders allPatients component
   render() {
     if (this.state.patients.length === 0) {
       return (
@@ -245,7 +263,7 @@ class allPatients extends Component {
                 id="Search Title"
                 type="text"
                 value={this.state.searchTerm}
-                onChange={this.onLastNameChange}
+                onChange={this.onSearchTermChange}
               />&nbsp;&nbsp;&nbsp;&nbsp;
             </form>
 
