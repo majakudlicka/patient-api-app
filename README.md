@@ -8,7 +8,6 @@ This project is a simple React app that displays the list of patients. The app a
 - React ([Create React App](https://github.com/facebookincubator/create-react-app))
 - Node.js
 - Express
-- MongoDB
 
 ## How to launch the app
 
